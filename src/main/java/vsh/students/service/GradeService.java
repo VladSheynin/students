@@ -6,19 +6,19 @@ import org.springframework.stereotype.Service;
 import vsh.students.model.Course;
 import vsh.students.model.Grade;
 import vsh.students.model.Student;
-import vsh.students.reposiroies.GradeRepository;
+import vsh.students.repositories.GradeRepository;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Service
-public class GradeHelper {
+public class GradeService {
     @Autowired
     private GradeRepository gradeRepository;
     @Autowired
-    private CourseHelper courseHelper;
+    private CourseService courseService;
     @Autowired
-    private StudentsHelper studentsHelper;
+    private StudentsService studentsService;
 
 
     /**
@@ -32,13 +32,13 @@ public class GradeHelper {
     public void addGrade(long student_id, long course_id, int gradeSize, LocalDate gradeAt) {
         Student student;
         try {
-            student = studentsHelper.getStudentById(student_id);
+            student = studentsService.getStudentById(student_id);
         } catch (EntityNotFoundException e) {
             throw new EntityNotFoundException("Студент не найден");
         }
         Course course;
         try {
-            course = courseHelper.getCourseById(course_id);
+            course = courseService.getCourseById(course_id);
         } catch (EntityNotFoundException e) {
             throw new EntityNotFoundException("Курс не найден");
         }

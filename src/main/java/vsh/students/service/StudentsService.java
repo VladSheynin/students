@@ -5,13 +5,13 @@ import jakarta.persistence.NonUniqueResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vsh.students.model.Student;
-import vsh.students.reposiroies.StudentRepository;
+import vsh.students.repositories.StudentRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class StudentsHelper {
+public class StudentsService {
     @Autowired
     private StudentRepository studentRepository;
 

@@ -5,22 +5,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vsh.students.model.Attendance;
 import vsh.students.model.Course;
-import vsh.students.model.Grade;
 import vsh.students.model.Student;
-import vsh.students.reposiroies.AttendanceRepository;
-import vsh.students.reposiroies.GradeRepository;
+import vsh.students.repositories.AttendanceRepository;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Service
-public class AttendanceHelper {
+public class AttendanceService {
     @Autowired
     private AttendanceRepository attendanceRepository;
     @Autowired
-    private CourseHelper courseHelper;
+    private CourseService courseService;
     @Autowired
-    private StudentsHelper studentsHelper;
+    private StudentsService studentsService;
 
 
 
@@ -35,13 +33,13 @@ public class AttendanceHelper {
     public void addAttendance(long student_id, long course_id, LocalDate attendance_date, boolean present) {
         Student student;
         try {
-            student = studentsHelper.getStudentById(student_id);
+            student = studentsService.getStudentById(student_id);
         } catch (EntityNotFoundException e) {
             throw new EntityNotFoundException("Студент не найден");
         }
         Course course;
         try {
-            course = courseHelper.getCourseById(course_id);
+            course = courseService.getCourseById(course_id);
         } catch (EntityNotFoundException e) {
             throw new EntityNotFoundException("Курс не найден");
         }
@@ -59,7 +57,7 @@ public class AttendanceHelper {
      * @param id - идентификатор студента
      * @return - посещения данного студента
      */
-    public List<Attendance> getGradeByStudentId(long id) {
+    public List<Attendance> getAttendanceByStudentId(long id) {
         return attendanceRepository.findByStudent_Id(id);
     }
 

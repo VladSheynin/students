@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import vsh.students.model.Course;
 import vsh.students.model.Student;
 import vsh.students.model.Teacher;
-import vsh.students.reposiroies.CourseRepository;
+import vsh.students.repositories.CourseRepository;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,13 +15,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CourseHelper {
+public class CourseService {
     @Autowired
     private CourseRepository courseRepository;
     @Autowired
-    private TeacherHelper teacherHelper;
+    private TeacherService teacherService;
     @Autowired
-    private StudentsHelper studentsHelper;
+    private StudentsService studentsService;
 
     /**
      * Добавление курса
@@ -34,7 +34,7 @@ public class CourseHelper {
         if (getCourseByName(course_name) != null) throw new NonUniqueResultException("Такой курс уже есть");
         Teacher teacher;
         try {
-            teacher = teacherHelper.getTeacherById(teacher_id);
+            teacher = teacherService.getTeacherById(teacher_id);
         } catch (EntityNotFoundException e) {
             throw new EntityNotFoundException("Один из идентификаторов преподавателя не существует");
         }
@@ -42,7 +42,7 @@ public class CourseHelper {
         List<Student> students = new ArrayList<>();
         for (String string : strings) {
             try {
-                students.add(studentsHelper.getStudentById(Long.parseLong(string)));
+                students.add(studentsService.getStudentById(Long.parseLong(string)));
             } catch (EntityNotFoundException e) {
                 throw new EntityNotFoundException("Один из идентификаторов студентов не существует");
             }

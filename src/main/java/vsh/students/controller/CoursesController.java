@@ -6,55 +6,53 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import vsh.students.model.Course;
-import vsh.students.service.CourseHelper;
+import vsh.students.service.CourseService;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/course")
 public class CoursesController {
     @Autowired
-    CourseHelper courseHelper;
+    private CourseService courseService;
 
-    @GetMapping(value = "/course", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Course> getCourseById(@RequestParam long id) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(courseHelper.getCourseById(id));
+            return ResponseEntity.status(HttpStatus.OK).body(courseService.getCourseById(id));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
     }
 
-    @GetMapping(value = "/course/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Course>> getAllCourses() {
-        List<Course> teachers = courseHelper.getAllCourses();
-        if (teachers.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        else return ResponseEntity.status(HttpStatus.OK).body(teachers);
+        List<Course> courses = courseService.getAllCourses();
+        if (courses.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        else return ResponseEntity.status(HttpStatus.OK).body(courses);
     }
 
-    @GetMapping(value = "/course/teacherName", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/teacherName", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Course>> getCourseByTeacherName(@RequestParam String teacher_name) {
-        List<Course> courseList = courseHelper.getCoursesByTeacherName(teacher_name);
+        List<Course> courseList = courseService.getCoursesByTeacherName(teacher_name);
         if (courseList.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         else return ResponseEntity.status(HttpStatus.OK).body(courseList);
     }
 
-    @GetMapping(value = "/course/teacherId", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/teacherId", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Course>> getCourseByTeacherId(@RequestParam long teacher_id) {
-        List<Course> courseList = courseHelper.getCoursesByTeacherId(teacher_id);
+        List<Course> courseList = courseService.getCoursesByTeacherId(teacher_id);
         if (courseList.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         else return ResponseEntity.status(HttpStatus.OK).body(courseList);
     }
 
-    @PostMapping(value = "/course", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> addTeacher(String course_name, long teacher_id, String students_ids) {
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> addCourse(@RequestParam String course_name,@RequestParam long teacher_id,@RequestParam String students_ids) {
         try {
-            courseHelper.addCourse(course_name, teacher_id, students_ids);
-            return ResponseEntity.status(HttpStatus.OK).build();
+            courseService.addCourse(course_name, teacher_id, students_ids);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (NonUniqueResultException | EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
         }

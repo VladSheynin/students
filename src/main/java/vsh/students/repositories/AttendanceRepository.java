@@ -1,4 +1,4 @@
-package vsh.students.reposiroies;
+package vsh.students.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import vsh.students.model.Attendance;

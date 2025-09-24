@@ -11,19 +11,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vsh.students.model.Teacher;
-import vsh.students.service.TeacherHelper;
+import vsh.students.service.TeacherService;
 
 import java.util.List;
 
 @RestController
 public class TeachersController {
     @Autowired
-    TeacherHelper teacherHelper;
+    TeacherService teacherService;
 
     @GetMapping(value = "/teacher", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Teacher> getTeacherById(@RequestParam long id) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(teacherHelper.getTeacherById(id));
+            return ResponseEntity.status(HttpStatus.OK).body(teacherService.getTeacherById(id));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
@@ -31,14 +31,14 @@ public class TeachersController {
 
     @GetMapping(value = "/teacher/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Teacher>> getAllTeachers() {
-        List<Teacher> teachers = teacherHelper.getAllTeachers();
+        List<Teacher> teachers = teacherService.getAllTeachers();
         if (teachers.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         else return ResponseEntity.status(HttpStatus.OK).body(teachers);
     }
 
     @GetMapping(value = "/teacher/department", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Teacher>> getTeachersByGroup(@RequestParam String department) {
-        List<Teacher> teachers = teacherHelper.getTeachersByDepartment(department);
+        List<Teacher> teachers = teacherService.getTeachersByDepartment(department);
         if (teachers.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         else return ResponseEntity.status(HttpStatus.OK).body(teachers);
     }
@@ -46,8 +46,8 @@ public class TeachersController {
     @PostMapping(value = "/teacher", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> addTeacher(@RequestParam String name,@RequestParam String department) {
         try {
-            teacherHelper.addTeacher(name, department);
-            return ResponseEntity.status(HttpStatus.OK).build();
+            teacherService.addTeacher(name, department);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (NonUniqueResultException e) {
             return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
         }

@@ -11,19 +11,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import vsh.students.model.Student;
-import vsh.students.service.StudentsHelper;
+import vsh.students.service.StudentsService;
 
 import java.util.List;
 
 @RestController
 public class StudentsController {
     @Autowired
-    StudentsHelper studentsHelper;
+    StudentsService studentsService;
 
     @GetMapping(value = "/student", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Student> getStudentById(@RequestParam long id) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(studentsHelper.getStudentById(id));
+            return ResponseEntity.status(HttpStatus.OK).body(studentsService.getStudentById(id));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         }
@@ -31,14 +31,14 @@ public class StudentsController {
 
     @GetMapping(value = "/student/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Student>> getAllStudents() {
-        List<Student> students = studentsHelper.getAllStudents();
+        List<Student> students = studentsService.getAllStudents();
         if (students.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         else return ResponseEntity.status(HttpStatus.OK).body(students);
     }
 
     @GetMapping(value = "/student/group", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Student>> getStudentsByGroup(@RequestParam String group) {
-        List<Student> students = studentsHelper.getStudentsByGroup(group);
+        List<Student> students = studentsService.getStudentsByGroup(group);
         if (students.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         else return ResponseEntity.status(HttpStatus.OK).body(students);
     }
@@ -46,8 +46,8 @@ public class StudentsController {
     @PostMapping(value = "/student", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> addStudent(@RequestParam String name, String group) {
         try {
-            studentsHelper.addStudent(name, group);
-            return ResponseEntity.status(HttpStatus.OK).build();
+            studentsService.addStudent(name, group);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (NonUniqueResultException e) {
             return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).build();
         }

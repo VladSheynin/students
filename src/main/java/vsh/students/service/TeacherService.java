@@ -4,16 +4,14 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.NonUniqueResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import vsh.students.model.Student;
 import vsh.students.model.Teacher;
-import vsh.students.reposiroies.StudentRepository;
-import vsh.students.reposiroies.TeacherRepository;
+import vsh.students.repositories.TeacherRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class TeacherHelper {
+public class TeacherService {
     @Autowired
     private TeacherRepository teacherRepository;
 
