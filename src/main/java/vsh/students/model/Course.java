@@ -2,7 +2,7 @@ package vsh.students.model;
 
 import jakarta.persistence.*;
 
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "courses")
@@ -19,7 +19,7 @@ public class Course {
     private Teacher teacher;
 
     @ManyToMany
-    private Set<Student> students;
+    private List<Student> students;
 
     public Course() {
     }
@@ -48,11 +48,11 @@ public class Course {
         this.teacher = teacher;
     }
 
-    public Set<Student> getStudents() {
+    public List<Student> getStudents() {
         return students;
     }
 
-    public void setStudents(Set<Student> students) {
+    public void setStudents(List<Student> students) {
         this.students = students;
     }
 }
