@@ -9,22 +9,62 @@ import java.time.LocalDate;
 public class Grade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+    private long id;
 
     @ManyToOne
     @JoinColumn(name = "student_id")
-    Student student;
+    private Student student;
 
     @ManyToOne
     @JoinColumn(name = "course_id")
-    Course course;
+    private Course course;
 
     @Column(name = "grade")
-    String grade;
+    private String grade;
 
     @Column(name = "grade_date")
-    LocalDate gradedAt;
+    private LocalDate gradedAt;
 
     public Grade() {
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
+    public String getGrade() {
+        return grade;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+
+    public LocalDate getGradedAt() {
+        return gradedAt;
+    }
+
+    public void setGradedAt(LocalDate gradedAt) {
+        this.gradedAt = gradedAt;
     }
 }
