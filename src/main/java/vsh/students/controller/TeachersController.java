@@ -44,7 +44,7 @@ public class TeachersController {
     }
 
     @PostMapping(value = "/teacher", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> addTeacher(@RequestParam String name, String department) {
+    public ResponseEntity<Void> addTeacher(@RequestParam String name,@RequestParam String department) {
         try {
             teacherHelper.addTeacher(name, department);
             return ResponseEntity.status(HttpStatus.OK).build();

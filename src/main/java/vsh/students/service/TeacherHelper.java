@@ -40,7 +40,7 @@ public class TeacherHelper {
     public Teacher getTeacherById(long id) {
         Optional<Teacher> optionalTeacher = teacherRepository.findById(id);
         List<Teacher> listTeachers = optionalTeacher.map(List::of).orElseGet(List::of);
-        if (listTeachers.isEmpty()) throw new EntityNotFoundException("Студент не найден");
+        if (listTeachers.isEmpty()) throw new EntityNotFoundException("Преподаватель не найден");
         return listTeachers.getFirst();
     }
 
