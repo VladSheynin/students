@@ -105,6 +105,4 @@ public class CourseHelper {
     public List<Course> getAllCourses() {
         return courseRepository.findAll();
     }
-
-
 }

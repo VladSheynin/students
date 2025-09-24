@@ -20,7 +20,7 @@ public class Grade {
     private Course course;
 
     @Column(name = "grade")
-    private String grade;
+    private int grade;
 
     @Column(name = "grade_date")
     private LocalDate gradedAt;
@@ -52,11 +52,11 @@ public class Grade {
         this.course = course;
     }
 
-    public String getGrade() {
+    public int getGrade() {
         return grade;
     }
 
-    public void setGrade(String grade) {
+    public void setGrade(int grade) {
         this.grade = grade;
     }
 
