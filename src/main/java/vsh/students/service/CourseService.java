@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.NonUniqueResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import vsh.students.dto.CourseDTO;
 import vsh.students.model.Course;
 import vsh.students.model.Student;
 import vsh.students.model.Teacher;
@@ -26,30 +27,32 @@ public class CourseService {
     /**
      * Добавление курса
      *
-     * @param course_name  имя курса
-     * @param teacher_id   id преподавателя
-     * @param students_ids список id студентов
+     * @param courseDTO - DTO объекта курс
      */
-    public void addCourse(String course_name, long teacher_id, String students_ids) {
-        if (getCourseByName(course_name) != null) throw new NonUniqueResultException("Такой курс уже есть");
+     public void addCourse(CourseDTO courseDTO) {
+        if (getCourseByName(courseDTO.getCourseName()) != null) {
+            throw new NonUniqueResultException("Такой курс уже есть");
+        }
+
         Teacher teacher;
         try {
-            teacher = teacherService.getTeacherById(teacher_id);
+            teacher = teacherService.getTeacherById(courseDTO.getTeacherId());
         } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException("Один из идентификаторов преподавателя не существует");
+            throw new EntityNotFoundException("Преподаватель с таким ID не найден");
         }
-        List<String> strings = Arrays.stream(students_ids.trim().split(",")).toList();
+
         List<Student> students = new ArrayList<>();
-        for (String string : strings) {
+        for (long studentId : courseDTO.getStudentsIds()) {
             try {
-                students.add(studentsService.getStudentById(Long.parseLong(string)));
+                students.add(studentsService.getStudentById(studentId));
             } catch (EntityNotFoundException e) {
-                throw new EntityNotFoundException("Один из идентификаторов студентов не существует");
+                throw new EntityNotFoundException("Студент с ID " + studentId + " не найден");
             }
         }
+
         Course course = new Course();
+        course.setName(courseDTO.getCourseName());
         course.setTeacher(teacher);
-        course.setName(course_name);
         course.setStudents(students);
         courseRepository.save(course);
     }
@@ -74,7 +77,7 @@ public class CourseService {
      * @return - полученный курс
      */
     public Course getCourseByName(String name) {
-        return courseRepository.findByName(name);
+        return courseRepository.findByNameWithTeacherAndStudents(name);
     }
 
     /**
