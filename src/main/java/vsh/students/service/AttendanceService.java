@@ -49,7 +49,7 @@ public class AttendanceService {
      */
     public List<Attendance> getAttendanceByStudentId(long id) {
         if (!studentsService.existsById(id))
-            throw new StudentNotFoundException("\"Студент с ID \" + id + \" не найден\"");
+            throw new StudentNotFoundException("\"Студент с ID \"" + id + "\" не найден\"");
         return attendanceRepository.findByStudent_Id(id);
     }
 

@@ -1,6 +1,5 @@
 package vsh.students.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vsh.students.dto.CourseDTO;
@@ -85,6 +84,8 @@ public class CourseService {
      * @return - список курсов данного преподавателя
      */
     public List<Course> getCoursesByTeacherName(String name) {
+        if (teacherService.getTeacherByName(name) == null)
+            throw new TeacherNotFoundException("Преподаватель с именем '" + name + "' не найден");
         return courseRepository.findByTeacher_Name(name);
     }
 
@@ -95,6 +96,8 @@ public class CourseService {
      * @return - список курсов данного преподавателя
      */
     public List<Course> getCoursesByTeacherId(long id) {
+        if (teacherService.getTeacherById(id) == null)
+            throw new TeacherNotFoundException("Преподаватель с id '" + id + "' не найден");
         return courseRepository.findByTeacher_Id(id);
     }
 

@@ -33,17 +33,17 @@ public class TeacherService {
     }
 
     /**
-     * Найти студента по id
+     * Найти преподавателя по id
      *
-     * @param id - идентификатор студента
-     * @return - объект студент (optional)
+     * @param id - идентификатор преподавателя
+     * @return - объект преподаватель
      */
     public Teacher getTeacherById(long id) {
         return teacherRepository.findById(id).orElseThrow(() -> new TeacherNotFoundException("Преподаватель с id " + id + " не найден"));
     }
 
     /**
-     * Получить Student по имени
+     * Получить преподавателя по имени
      *
      */
     public Teacher getTeacherByName(String name) {
@@ -51,16 +51,16 @@ public class TeacherService {
     }
 
     /**
-     * Получить всех студентов
+     * Получить всех преподавателей
      *
-     * @return список всех студентов
+     * @return список всех преподавателей
      */
     public List<Teacher> getAllTeachers() {
         return teacherRepository.findAll();
     }
 
     /**
-     * Вернуть список студентов по группе
+     * Вернуть список преподавателей по департаменту
      *
      * @param department - департамент
      * @return - список преподавателей

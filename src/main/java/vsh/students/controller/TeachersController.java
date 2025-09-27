@@ -20,17 +20,13 @@ public class TeachersController {
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Teacher> getTeacherById(@PathVariable long id) {
-        try {
             return ResponseEntity.status(HttpStatus.OK).body(teacherService.getTeacherById(id));
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Teacher>> getAllTeachers() {
         List<Teacher> teachers = teacherService.getAllTeachers();
-        if (teachers.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        if (teachers.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT). build();
         else return ResponseEntity.status(HttpStatus.OK).body(teachers);
     }
 

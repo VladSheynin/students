@@ -36,7 +36,7 @@ public class StudentsService {
      * Найти студента по id
      *
      * @param id - идентификатор студента
-     * @return - объект студент (optional)
+     * @return - объект студент
      */
     public Student getStudentById(long id) {
         return studentRepository.findById(id).orElseThrow(() -> new StudentNotFoundException(" Студент с id " + id + " не найден"));
