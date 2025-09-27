@@ -1,14 +1,14 @@
 package vsh.students.service;
 
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.NonUniqueResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import vsh.students.dto.TeacherDTO;
+import vsh.students.exception.DuplicateTeacherException;
+import vsh.students.exception.TeacherNotFoundException;
 import vsh.students.model.Teacher;
 import vsh.students.repositories.TeacherRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TeacherService {
@@ -18,15 +18,18 @@ public class TeacherService {
     /**
      * Создать преподавателя
      *
-     * @param name  - фио преподавателя
-     * @param department - департамент преподавателя
+     * @param teacherDTO - DTO преподавателя
      */
-    public void addTeacher(String name, String department) {
-        if (getTeacherByName(name) != null) throw new NonUniqueResultException("Такой преподаватель уже есть");
+    public Teacher addTeacher(TeacherDTO teacherDTO) {
+        if (teacherRepository.findByName(teacherDTO.getName()).isPresent()) {
+            throw new DuplicateTeacherException("Такой преподаватель уже есть");
+        }
+
         Teacher teacher = new Teacher();
-        teacher.setName(name);
-        teacher.setDepartment(department);
+        teacher.setName(teacherDTO.getName());
+        teacher.setDepartment(teacherDTO.getDepartment());
         teacherRepository.save(teacher);
+        return teacher;
     }
 
     /**
@@ -36,10 +39,7 @@ public class TeacherService {
      * @return - объект студент (optional)
      */
     public Teacher getTeacherById(long id) {
-        Optional<Teacher> optionalTeacher = teacherRepository.findById(id);
-        List<Teacher> listTeachers = optionalTeacher.map(List::of).orElseGet(List::of);
-        if (listTeachers.isEmpty()) throw new EntityNotFoundException("Преподаватель не найден");
-        return listTeachers.getFirst();
+        return teacherRepository.findById(id).orElseThrow(() -> new TeacherNotFoundException("Преподаватель с id " + id + " не найден"));
     }
 
     /**
@@ -47,7 +47,7 @@ public class TeacherService {
      *
      */
     public Teacher getTeacherByName(String name) {
-        return teacherRepository.findByName(name);
+        return teacherRepository.findByName(name).orElseThrow(() -> new TeacherNotFoundException("Преподаватель с именем '" + name + "' не найден"));
     }
 
     /**
@@ -67,6 +67,16 @@ public class TeacherService {
      */
     public List<Teacher> getTeachersByDepartment(String department) {
         return teacherRepository.findByDepartment(department);
+    }
+
+    /**
+     * Проверка наличия преподавателя с id
+     *
+     * @param id - конкретный id
+     * @return - true|false если преподаватель есть в базе
+     */
+    public boolean existsById(long id) {
+        return teacherRepository.existsById(id);
     }
 
 }

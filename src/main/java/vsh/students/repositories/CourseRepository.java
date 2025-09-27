@@ -20,4 +20,5 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     @Query("SELECT c FROM Course c JOIN FETCH c.teacher JOIN FETCH c.students WHERE c.name = :name")
     Course findByNameWithTeacherAndStudents(@Param("name") String name);
+
 }

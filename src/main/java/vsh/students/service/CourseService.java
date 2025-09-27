@@ -1,19 +1,19 @@
 package vsh.students.service;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.NonUniqueResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vsh.students.dto.CourseDTO;
+import vsh.students.exception.CourseNotFoundException;
+import vsh.students.exception.DuplicateCourseException;
+import vsh.students.exception.StudentNotFoundException;
+import vsh.students.exception.TeacherNotFoundException;
 import vsh.students.model.Course;
 import vsh.students.model.Student;
 import vsh.students.model.Teacher;
 import vsh.students.repositories.CourseRepository;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CourseService {
@@ -29,32 +29,29 @@ public class CourseService {
      *
      * @param courseDTO - DTO объекта курс
      */
-     public void addCourse(CourseDTO courseDTO) {
+    public Course addCourse(CourseDTO courseDTO) {
         if (getCourseByName(courseDTO.getCourseName()) != null) {
-            throw new NonUniqueResultException("Такой курс уже есть");
+            throw new DuplicateCourseException("Курс с именем '" + courseDTO.getCourseName() + "' уже существует");
         }
 
-        Teacher teacher;
-        try {
-            teacher = teacherService.getTeacherById(courseDTO.getTeacherId());
-        } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException("Преподаватель с таким ID не найден");
+        Teacher teacher = teacherService.getTeacherById(courseDTO.getTeacherId());
+
+        List<Student> students = studentsService.getStudentsByIds(courseDTO.getStudentsIds());
+        if (students.size() != courseDTO.getStudentsIds().size()) {
+            List<Long> foundIds = students.stream().map(Student::getId).toList();
+            List<Long> missingIds = courseDTO.getStudentsIds().stream()
+                    .filter(id -> !foundIds.contains(id))
+                    .toList();
+            throw new StudentNotFoundException("Не найдены студенты с id: " + missingIds);
         }
 
-        List<Student> students = new ArrayList<>();
-        for (long studentId : courseDTO.getStudentsIds()) {
-            try {
-                students.add(studentsService.getStudentById(studentId));
-            } catch (EntityNotFoundException e) {
-                throw new EntityNotFoundException("Студент с ID " + studentId + " не найден");
-            }
-        }
 
         Course course = new Course();
         course.setName(courseDTO.getCourseName());
         course.setTeacher(teacher);
         course.setStudents(students);
         courseRepository.save(course);
+        return course;
     }
 
     /**
@@ -64,10 +61,7 @@ public class CourseService {
      * @return - полученный курс
      */
     public Course getCourseById(long id) {
-        Optional<Course> optionalCourse = courseRepository.findById(id);
-        List<Course> courseList = optionalCourse.map(List::of).orElseGet(List::of);
-        if (courseList.isEmpty()) throw new EntityNotFoundException("Курс не найден");
-        return courseList.getFirst();
+        return courseRepository.findById(id).orElseThrow(() -> new CourseNotFoundException("Курс с ID " + id + " не найден"));
     }
 
     /**
@@ -77,7 +71,11 @@ public class CourseService {
      * @return - полученный курс
      */
     public Course getCourseByName(String name) {
-        return courseRepository.findByNameWithTeacherAndStudents(name);
+        Course course = courseRepository.findByNameWithTeacherAndStudents(name);
+        if (course == null) {
+            throw new CourseNotFoundException("Курс с названием '" + name + "' не найден");
+        }
+        return course;
     }
 
     /**
@@ -107,5 +105,15 @@ public class CourseService {
      */
     public List<Course> getAllCourses() {
         return courseRepository.findAll();
+    }
+
+    /**
+     * Проверка наличия курса с id
+     *
+     * @param id - конкретный id
+     * @return - true|false если курс есть в базе
+     */
+    public boolean existsById(long id) {
+        return courseRepository.existsById(id);
     }
 }

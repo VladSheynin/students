@@ -1,14 +1,14 @@
 package vsh.students.service;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import vsh.students.dto.AttendanceDTO;
+import vsh.students.exception.StudentNotFoundException;
 import vsh.students.model.Attendance;
 import vsh.students.model.Course;
 import vsh.students.model.Student;
 import vsh.students.repositories.AttendanceRepository;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -20,35 +20,25 @@ public class AttendanceService {
     @Autowired
     private StudentsService studentsService;
 
-
-
     /**
      * Добавление факта посещения
      *
-     * @param student_id - идентификатор студента
-     * @param course_id  - идентификатор курса
-     * @param attendance_date  - дата посещения
-     * @param present    - факт посещения
+     * @param attendanceDTO - DTO факта посещения
      */
-    public void addAttendance(long student_id, long course_id, LocalDate attendance_date, boolean present) {
+    public Attendance addAttendance(AttendanceDTO attendanceDTO) {//long student_id, long course_id, LocalDate attendance_date, boolean present) {
         Student student;
-        try {
-            student = studentsService.getStudentById(student_id);
-        } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException("Студент не найден");
-        }
+        student = studentsService.getStudentById(attendanceDTO.getStudent_id());
+
         Course course;
-        try {
-            course = courseService.getCourseById(course_id);
-        } catch (EntityNotFoundException e) {
-            throw new EntityNotFoundException("Курс не найден");
-        }
+        course = courseService.getCourseById(attendanceDTO.getCourse_id());
+
         Attendance attendance = new Attendance();
         attendance.setStudent(student);
         attendance.setCourse(course);
-        attendance.setDate(attendance_date);
-        attendance.setPresent(present);
+        attendance.setDate(attendanceDTO.getDate());
+        attendance.setPresent(attendanceDTO.isPresent());
         attendanceRepository.save(attendance);
+        return attendance;
     }
 
     /**
@@ -58,6 +48,8 @@ public class AttendanceService {
      * @return - посещения данного студента
      */
     public List<Attendance> getAttendanceByStudentId(long id) {
+        if (!studentsService.existsById(id))
+            throw new StudentNotFoundException("\"Студент с ID \" + id + \" не найден\"");
         return attendanceRepository.findByStudent_Id(id);
     }
 

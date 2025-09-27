@@ -1,14 +1,14 @@
 package vsh.students.service;
 
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.NonUniqueResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import vsh.students.dto.StudentDTO;
+import vsh.students.exception.DuplicateStudentException;
+import vsh.students.exception.StudentNotFoundException;
 import vsh.students.model.Student;
 import vsh.students.repositories.StudentRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class StudentsService {
@@ -18,15 +18,18 @@ public class StudentsService {
     /**
      * Создать студента
      *
-     * @param name  - фио студента
-     * @param group -группа студента
+     * @param studentDTO - DTO студента
      */
-    public void addStudent(String name, String group) {
-        if (getStudentByName(name) != null) throw new NonUniqueResultException("Такой студент уже есть");
+    public Student addStudent(StudentDTO studentDTO) {
+        if (studentRepository.findByName(studentDTO.getName()).isPresent()) {
+            throw new DuplicateStudentException("Такой студент уже есть");
+        }
+
         Student student = new Student();
-        student.setName(name);
-        student.setGroup(group);
+        student.setName(studentDTO.getName());
+        student.setGroup(studentDTO.getGroup());
         studentRepository.save(student);
+        return student;
     }
 
     /**
@@ -36,10 +39,7 @@ public class StudentsService {
      * @return - объект студент (optional)
      */
     public Student getStudentById(long id) {
-        Optional<Student> optionalStudent = studentRepository.findById(id);
-        List<Student> listStudents = optionalStudent.map(List::of).orElseGet(List::of);
-        if (listStudents.isEmpty()) throw new EntityNotFoundException("Студент не найден");
-        return listStudents.getFirst();
+        return studentRepository.findById(id).orElseThrow(() -> new StudentNotFoundException(" Студент с id " + id + " не найден"));
     }
 
     /**
@@ -47,7 +47,7 @@ public class StudentsService {
      *
      */
     public Student getStudentByName(String name) {
-        return studentRepository.findByName(name);
+        return studentRepository.findByName(name).orElseThrow(() -> new StudentNotFoundException("Студент с именем '" + name + "' не найден"));
     }
 
     /**
@@ -68,5 +68,26 @@ public class StudentsService {
     public List<Student> getStudentsByGroup(String group) {
         return studentRepository.findByGroup(group);
     }
+
+    /**
+     * Список студентов по списку id
+     *
+     * @param ids - список идентификаторов студентов
+     * @return - список студентов
+     */
+    public List<Student> getStudentsByIds(List<Long> ids) {
+        return studentRepository.findAllByIdIn(ids);
+    }
+
+    /**
+     * Проверка наличия студента с id
+     *
+     * @param id - конкретный id
+     * @return - true|false если студент есть в базе
+     */
+    public boolean existsById(long id) {
+        return studentRepository.existsById(id);
+    }
+
 
 }
