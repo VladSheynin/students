@@ -6,6 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vsh.students.dto.CourseDTO;
+import vsh.students.dto.StudentAbsenceCountDTO;
 import vsh.students.model.Course;
 import vsh.students.service.CourseService;
 
@@ -54,5 +55,15 @@ public class CoursesController {
         List<Course> courseList = courseService.getCoursesByTeacherId(teacher_id);
         if (courseList.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         return ResponseEntity.status(HttpStatus.OK).body(courseList);
+    }
+
+    @GetMapping(value = "/presents/{course_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<StudentAbsenceCountDTO>> getAbsencesByCourse(@PathVariable long course_id) {
+        return ResponseEntity.status(HttpStatus.OK).body(courseService.getPresentsByCourse(course_id));
+    }
+
+    @GetMapping(value = "/average/{course_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Double> getAverageGradeByCourse(@PathVariable long course_id) {
+        return ResponseEntity.status(HttpStatus.OK).body(courseService.getAverageGradeByCourse(course_id));
     }
 }

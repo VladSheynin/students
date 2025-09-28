@@ -1,6 +1,5 @@
 package vsh.students.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vsh.students.dto.StudentDTO;
 import vsh.students.exception.DuplicateStudentException;

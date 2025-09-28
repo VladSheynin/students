@@ -22,7 +22,7 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     Course findByNameWithTeacherAndStudents(@Param("name") String name);
 
     //NativeQuery запрос - прямой запрос с использованием специфичных функций конкретной БД
-    @Query(value = "SELECT AVG(g.grade) FROM Grade g WHERE g.course = :course", nativeQuery = true)
+    @Query("SELECT AVG(g.grade) FROM Grade g WHERE g.course = :course")
     Double findAverageGradeByCourse(@Param("course") Course course);
 
 }

@@ -2,6 +2,7 @@ package vsh.students.service;
 
 import org.springframework.stereotype.Service;
 import vsh.students.dto.CourseDTO;
+import vsh.students.dto.StudentAbsenceCountDTO;
 import vsh.students.exception.CourseNotFoundException;
 import vsh.students.exception.DuplicateCourseException;
 import vsh.students.exception.StudentNotFoundException;
@@ -9,6 +10,7 @@ import vsh.students.exception.TeacherNotFoundException;
 import vsh.students.model.Course;
 import vsh.students.model.Student;
 import vsh.students.model.Teacher;
+import vsh.students.repositories.AttendanceRepository;
 import vsh.students.repositories.CourseRepository;
 
 import java.util.List;
@@ -18,11 +20,13 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final TeacherService teacherService;
     private final StudentsService studentsService;
+    private final AttendanceRepository attendanceRepository;
 
-    public CourseService(CourseRepository courseRepository, TeacherService teacherService, StudentsService studentsService) {
+    public CourseService(CourseRepository courseRepository, TeacherService teacherService, StudentsService studentsService, AttendanceRepository attendanceRepository) {
         this.courseRepository = courseRepository;
         this.teacherService = teacherService;
         this.studentsService = studentsService;
+        this.attendanceRepository = attendanceRepository;
     }
 
     /**
@@ -40,9 +44,7 @@ public class CourseService {
         List<Student> students = studentsService.getStudentsByIds(courseDTO.getStudentsIds());
         if (students.size() != courseDTO.getStudentsIds().size()) {
             List<Long> foundIds = students.stream().map(Student::getId).toList();
-            List<Long> missingIds = courseDTO.getStudentsIds().stream()
-                    .filter(id -> !foundIds.contains(id))
-                    .toList();
+            List<Long> missingIds = courseDTO.getStudentsIds().stream().filter(id -> !foundIds.contains(id)).toList();
             throw new StudentNotFoundException("Не найдены студенты с id: " + missingIds);
         }
 
@@ -113,6 +115,28 @@ public class CourseService {
     }
 
     /**
+     * Получение средней оценки по курсу
+     *
+     * @param course_id - идентификатор курса
+     * @return - среднюю оценку или exception, если кур не найден
+     */
+    public Double getAverageGradeByCourse(long course_id) {
+        if (!existsById(course_id)) throw new CourseNotFoundException("Курс с ID " + course_id + " не найден");
+        return courseRepository.findAverageGradeByCourse(getCourseById(course_id));
+    }
+
+    /**
+     * Получение списка студентов и количества пропущенных ими занятий
+     *
+     * @param course_id - идентификатор курса
+     * @return список студентов с количеством пропусков (StudentAbsenceCountDTO) или exception если курс не найден
+     */
+    public List<StudentAbsenceCountDTO> getPresentsByCourse(long course_id) {
+        if (!existsById(course_id)) throw new CourseNotFoundException("Курс с id " + course_id + " не существует");
+        return attendanceRepository.findStudentsWithAbsenceCount(getCourseById(course_id));
+    }
+
+    /**
      * Проверка наличия курса с id
      *
      * @param id - конкретный id
@@ -121,4 +145,6 @@ public class CourseService {
     public boolean existsById(long id) {
         return courseRepository.existsById(id);
     }
+
+
 }
