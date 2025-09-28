@@ -1,6 +1,5 @@
 package vsh.students.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vsh.students.dto.AttendanceDTO;
 import vsh.students.exception.StudentNotFoundException;
@@ -13,12 +12,15 @@ import java.util.List;
 
 @Service
 public class AttendanceService {
-    @Autowired
-    private AttendanceRepository attendanceRepository;
-    @Autowired
-    private CourseService courseService;
-    @Autowired
-    private StudentsService studentsService;
+    private final AttendanceRepository attendanceRepository;
+    private final CourseService courseService;
+    private final StudentsService studentsService;
+
+    public AttendanceService(AttendanceRepository attendanceRepository, CourseService courseService, StudentsService studentsService) {
+        this.attendanceRepository = attendanceRepository;
+        this.courseService = courseService;
+        this.studentsService = studentsService;
+    }
 
     /**
      * Добавление факта посещения

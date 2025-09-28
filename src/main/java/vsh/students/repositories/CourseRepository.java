@@ -9,8 +9,8 @@ import vsh.students.model.Course;
 import java.util.List;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
-    @EntityGraph(attributePaths = {"teacher", "students"})
-    List<Course> findAll();
+    //@EntityGraph(attributePaths = {"teacher", "students"})
+    //List<Course> findAll();
 
     @EntityGraph(attributePaths = {"teacher", "students"})
     List<Course> findByTeacher_Name(String name);
@@ -20,5 +20,9 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     @Query("SELECT c FROM Course c JOIN FETCH c.teacher JOIN FETCH c.students WHERE c.name = :name")
     Course findByNameWithTeacherAndStudents(@Param("name") String name);
+
+    //NativeQuery запрос - прямой запрос с использованием специфичных функций конкретной БД
+    @Query(value = "SELECT AVG(g.grade) FROM Grade g WHERE g.course = :course", nativeQuery = true)
+    Double findAverageGradeByCourse(@Param("course") Course course);
 
 }

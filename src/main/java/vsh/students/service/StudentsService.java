@@ -12,8 +12,12 @@ import java.util.List;
 
 @Service
 public class StudentsService {
-    @Autowired
-    private StudentRepository studentRepository;
+
+    private final StudentRepository studentRepository;
+
+    public StudentsService(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
+    }
 
     /**
      * Создать студента

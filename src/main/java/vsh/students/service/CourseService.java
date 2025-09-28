@@ -1,6 +1,5 @@
 package vsh.students.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import vsh.students.dto.CourseDTO;
 import vsh.students.exception.CourseNotFoundException;
@@ -16,12 +15,15 @@ import java.util.List;
 
 @Service
 public class CourseService {
-    @Autowired
-    private CourseRepository courseRepository;
-    @Autowired
-    private TeacherService teacherService;
-    @Autowired
-    private StudentsService studentsService;
+    private final CourseRepository courseRepository;
+    private final TeacherService teacherService;
+    private final StudentsService studentsService;
+
+    public CourseService(CourseRepository courseRepository, TeacherService teacherService, StudentsService studentsService) {
+        this.courseRepository = courseRepository;
+        this.teacherService = teacherService;
+        this.studentsService = studentsService;
+    }
 
     /**
      * Добавление курса

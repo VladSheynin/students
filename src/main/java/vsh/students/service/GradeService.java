@@ -14,13 +14,15 @@ import java.util.List;
 
 @Service
 public class GradeService {
-    @Autowired
-    private GradeRepository gradeRepository;
-    @Autowired
-    private CourseService courseService;
-    @Autowired
-    private StudentsService studentsService;
+    private final GradeRepository gradeRepository;
+    private final CourseService courseService;
+    private final StudentsService studentsService;
 
+    public GradeService(GradeRepository gradeRepository, CourseService courseService, StudentsService studentsService) {
+        this.gradeRepository = gradeRepository;
+        this.courseService = courseService;
+        this.studentsService = studentsService;
+    }
 
     /**
      * Добавление оценки
