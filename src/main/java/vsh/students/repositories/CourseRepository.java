@@ -15,7 +15,8 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     @EntityGraph(attributePaths = {"teacher", "students"})
     List<Course> findByTeacher_Name(String name);
 
-    @EntityGraph(attributePaths = {"teacher", "students"})
+    //@EntityGraph(attributePaths = {"teacher", "students"})
+    @Query("SELECT DISTINCT c FROM Course c JOIN FETCH c.teacher t LEFT JOIN FETCH c.students s WHERE t.id = :id")
     List<Course> findByTeacher_Id(long id);
 
     @Query("SELECT c FROM Course c JOIN FETCH c.teacher JOIN FETCH c.students WHERE c.name = :name")
