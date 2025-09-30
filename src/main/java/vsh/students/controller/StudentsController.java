@@ -1,6 +1,5 @@
 package vsh.students.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +13,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/students")
 public class StudentsController {
-    @Autowired
-    StudentsService studentsService;
+    private final StudentsService studentsService;
+
+    public StudentsController(StudentsService studentsService) {
+        this.studentsService = studentsService;
+    }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Student> getStudentById(@PathVariable long id) {

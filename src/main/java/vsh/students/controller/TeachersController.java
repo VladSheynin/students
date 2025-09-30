@@ -1,7 +1,5 @@
 package vsh.students.controller;
 
-import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,18 +13,22 @@ import java.util.List;
 @RestController
 @RequestMapping("/teachers")
 public class TeachersController {
-    @Autowired
-    TeacherService teacherService;
+
+    private final TeacherService teacherService;
+
+    public TeachersController(TeacherService teacherService) {
+        this.teacherService = teacherService;
+    }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Teacher> getTeacherById(@PathVariable long id) {
-            return ResponseEntity.status(HttpStatus.OK).body(teacherService.getTeacherById(id));
+        return ResponseEntity.status(HttpStatus.OK).body(teacherService.getTeacherById(id));
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Teacher>> getAllTeachers() {
         List<Teacher> teachers = teacherService.getAllTeachers();
-        if (teachers.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT). build();
+        if (teachers.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
         else return ResponseEntity.status(HttpStatus.OK).body(teachers);
     }
 

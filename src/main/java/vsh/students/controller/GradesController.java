@@ -1,6 +1,5 @@
 package vsh.students.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +13,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/grades")
 public class GradesController {
-    @Autowired
-    private GradeService gradeService;
+    private final GradeService gradeService;
+
+    public GradesController(GradeService gradeService) {
+        this.gradeService = gradeService;
+    }
 
     @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Grade> addGrade(@RequestBody GradeDTO gradeDTO) {

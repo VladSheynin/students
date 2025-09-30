@@ -15,8 +15,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/attendances")
 public class AttendanceController {
-    @Autowired
-    private AttendanceService attendanceService;
+
+    private final AttendanceService attendanceService;
+
+    public AttendanceController(AttendanceService attendanceService) {
+        this.attendanceService = attendanceService;
+    }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Attendance> addAttendance(@RequestBody AttendanceDTO attendanceDTO) {
