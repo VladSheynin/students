@@ -20,11 +20,9 @@ import java.util.List;
 public class CoursesController {
 
     private final CourseService courseService;
-    private final CourseRepository courseRepository;
 
-    public CoursesController(CourseService courseService, CourseRepository courseRepository) {
+    public CoursesController(CourseService courseService) {
         this.courseService = courseService;
-        this.courseRepository = courseRepository;
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)

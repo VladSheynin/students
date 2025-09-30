@@ -43,7 +43,5 @@ public class TeachersController {
     public ResponseEntity<Teacher> addTeacher(@RequestBody TeacherDTO teacherDTO) {
         Teacher saved = teacherService.addTeacher(teacherDTO);
         return ResponseEntity.status(HttpStatus.CREATED).build();
-
     }
-
 }

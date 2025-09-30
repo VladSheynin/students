@@ -2,6 +2,7 @@ package vsh.students.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import vsh.students.dto.TeacherDTO;
 import vsh.students.exception.DuplicateTeacherException;
 import vsh.students.exception.TeacherNotFoundException;
@@ -23,6 +24,7 @@ public class TeacherService {
      *
      * @param teacherDTO - DTO преподавателя
      */
+    @Transactional
     public Teacher addTeacher(TeacherDTO teacherDTO) {
         if (teacherRepository.findByName(teacherDTO.getName()).isPresent()) {
             throw new DuplicateTeacherException("Такой преподаватель уже есть");

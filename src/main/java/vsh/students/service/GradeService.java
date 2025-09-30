@@ -4,10 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vsh.students.dto.GradeDTO;
 import vsh.students.dto.StudentAttendanceCountDTO;
-import vsh.students.exception.CourseNotFoundException;
-import vsh.students.exception.LowAttendanceException;
-import vsh.students.exception.NoAttendanceException;
-import vsh.students.exception.StudentNotFoundException;
+import vsh.students.exception.*;
 import vsh.students.model.Course;
 import vsh.students.model.Grade;
 import vsh.students.model.Student;
@@ -17,12 +14,12 @@ import java.util.List;
 
 @Service
 public class GradeService {
+    //минимальный процент посещений курса при котором ставится оценка
+    private final static double PERCENT_FOR_ATTENDANCE = 60;
     private final GradeRepository gradeRepository;
     private final CourseService courseService;
     private final StudentsService studentsService;
     private final AttendanceService attendanceService;
-    //минимальный процент посещений курса при котором ставится оценка
-    private final static double PERCENT_FOR_ATTENDANCE = 60;
 
     public GradeService(GradeRepository gradeRepository, CourseService courseService, StudentsService studentsService, AttendanceService attendanceService) {
         this.gradeRepository = gradeRepository;
@@ -41,18 +38,21 @@ public class GradeService {
         Student student;
         student = studentsService.getStudentById(gradeDTO.getStudent_id());
 
-        Course course;
-        course = courseService.getCourseById(gradeDTO.getCourse_id());
+        // проверка, что у данного студента еще нет оценки по этому курсу
+        if (getGradeByStudentIdAndCourse(gradeDTO.getStudent_id(), gradeDTO.getCourse_id()).isEmpty()) {
+            Course course;
+            course = courseService.getCourseById(gradeDTO.getCourse_id());
 
-        check(student, course);
+            check(student, course);
 
-        Grade grade = new Grade();
-        grade.setStudent(student);
-        grade.setCourse(course);
-        grade.setGrade(gradeDTO.getGradeSize());
-        grade.setGradedAt(gradeDTO.getGradeAt());
-        gradeRepository.save(grade);
-        return grade;
+            Grade grade = new Grade();
+            grade.setStudent(student);
+            grade.setCourse(course);
+            grade.setGrade(gradeDTO.getGradeSize());
+            grade.setGradedAt(gradeDTO.getGradeAt());
+            gradeRepository.save(grade);
+            return grade;
+        } else throw new DuplicateGradeOnCourseException("У данного студента уже есть оценка за этот курс ");
     }
 
     /**
@@ -61,7 +61,7 @@ public class GradeService {
      * @param student - студент
      * @param course  - курс
      */
-    void check(Student student, Course course) {
+    private void check(Student student, Course course) {
         StudentAttendanceCountDTO studentAttendanceCountDTO = attendanceService.getStudentAttendanceByCourse(student.getId(), course.getId());
         long present = studentAttendanceCountDTO.getPresent();
         long absences = studentAttendanceCountDTO.getAbsences();
@@ -73,8 +73,7 @@ public class GradeService {
         double percent = present * 100.0 / (present + absences);
 
         if (percent < PERCENT_FOR_ATTENDANCE) {
-            throw new LowAttendanceException("Студент " + student.getName() + " на курсе " + course.getName() +
-                    " посетил всего " + present + " занятий из " + (present + absences) + " (это " + percent + "%), при минимуме " + PERCENT_FOR_ATTENDANCE + "%");
+            throw new LowAttendanceException("Студент " + student.getName() + " на курсе " + course.getName() + " посетил всего " + present + " занятий из " + (present + absences) + " (это " + percent + "%), при минимуме " + PERCENT_FOR_ATTENDANCE + "%");
         }
 
     }
@@ -91,6 +90,21 @@ public class GradeService {
     }
 
     /**
+     * Получение оценок по студенту и курсу одновременно
+     *
+     * @param student_id - идентификатор студента
+     * @param course_id  - идентификатор курса
+     * @return - полученные оценки
+     */
+    public List<Grade> getGradeByStudentIdAndCourse(long student_id, long course_id) {
+        if (!studentsService.existsById(student_id))
+            throw new StudentNotFoundException("Студент с ID " + student_id + " не найден");
+        if (!courseService.existsById(course_id))
+            throw new CourseNotFoundException("Курс с ID " + course_id + " не найден");
+        return gradeRepository.findByStudent_idAndCourse_Id(student_id, course_id).orElse(List.of());
+    }
+
+    /**
      * Получение оценок по курсу
      *
      * @param id - идентификатор курса
@@ -102,5 +116,4 @@ public class GradeService {
         }
         return gradeRepository.findByCourse_Id(id).orElse(List.of());
     }
-
 }

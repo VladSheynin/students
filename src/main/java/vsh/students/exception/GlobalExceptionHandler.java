@@ -38,6 +38,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 
+    @ExceptionHandler(DuplicateGradeOnCourseException.class)
+    public ResponseEntity<String> handleDuplicateGradeOnCourse(DuplicateGradeOnCourseException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
     @ExceptionHandler(LowAttendanceException.class)
     public ResponseEntity<String> handleLowAttendance(LowAttendanceException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
@@ -47,4 +52,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleNoAttendance(NoAttendanceException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
+
+
 }

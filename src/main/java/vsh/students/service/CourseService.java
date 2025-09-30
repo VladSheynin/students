@@ -1,6 +1,7 @@
 package vsh.students.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import vsh.students.dto.CourseDTO;
 import vsh.students.dto.StudentAbsenceCountDTO;
 import vsh.students.exception.CourseNotFoundException;
@@ -34,6 +35,7 @@ public class CourseService {
      *
      * @param courseDTO - DTO объекта курс
      */
+    @Transactional
     public Course addCourse(CourseDTO courseDTO) {
         if (getCourseByName(courseDTO.getCourseName()) != null) {
             throw new DuplicateCourseException("Курс с именем '" + courseDTO.getCourseName() + "' уже существует");

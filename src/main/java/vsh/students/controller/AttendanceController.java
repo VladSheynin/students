@@ -33,7 +33,7 @@ public class AttendanceController {
         return ResponseEntity.status(HttpStatus.OK).body(attendanceService.getAttendanceByStudentId(student_id));
     }
 
-    @GetMapping(value = "/student/attendance/{student_id}/{course_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/student/course/{student_id}/{course_id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StudentAttendanceCountDTO> getStudentAttendanceByCourseIdAndStudentId(@PathVariable long student_id, @PathVariable long course_id) {
         return ResponseEntity.status(HttpStatus.OK).body(attendanceService.getStudentAttendanceByCourse(student_id, course_id));
     }

@@ -1,6 +1,7 @@
 package vsh.students.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import vsh.students.dto.StudentDTO;
 import vsh.students.exception.DuplicateStudentException;
 import vsh.students.exception.StudentNotFoundException;
@@ -23,6 +24,7 @@ public class StudentsService {
      *
      * @param studentDTO - DTO студента
      */
+    @Transactional
     public Student addStudent(StudentDTO studentDTO) {
         if (studentRepository.findByName(studentDTO.getName()).isPresent()) {
             throw new DuplicateStudentException("Такой студент уже есть");
