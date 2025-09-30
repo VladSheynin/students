@@ -37,4 +37,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleDuplicateStudent(DuplicateStudentException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
+
+    @ExceptionHandler(LowAttendanceException.class)
+    public ResponseEntity<String> handleLowAttendance(LowAttendanceException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(NoAttendanceException.class)
+    public ResponseEntity<String> handleNoAttendance(NoAttendanceException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
 }
