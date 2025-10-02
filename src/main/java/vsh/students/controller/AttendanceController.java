@@ -22,20 +22,20 @@ public class AttendanceController {
         this.attendanceService = attendanceService;
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     public ResponseEntity<Attendance> addAttendance(@RequestBody AttendanceDTO attendanceDTO) {
         Attendance saved = attendanceService.addAttendance(attendanceDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping(value = "/student/{student_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/student/{student_id}")
     public ResponseEntity<List<Attendance>> getAttendanceByStudentId(@PathVariable long student_id) {
-        return ResponseEntity.status(HttpStatus.OK).body(attendanceService.getAttendanceByStudentId(student_id));
+        return ResponseEntity.ok().body(attendanceService.getAttendanceByStudentId(student_id));
     }
 
-    @GetMapping(value = "/student/course/{student_id}/{course_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/student/course/{student_id}/{course_id}")
     public ResponseEntity<StudentAttendanceCountDTO> getStudentAttendanceByCourseIdAndStudentId(@PathVariable long student_id, @PathVariable long course_id) {
-        return ResponseEntity.status(HttpStatus.OK).body(attendanceService.getStudentAttendanceByCourse(student_id, course_id));
+        return ResponseEntity.ok().body(attendanceService.getStudentAttendanceByCourse(student_id, course_id));
     }
 
 }

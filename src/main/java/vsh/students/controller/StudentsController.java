@@ -19,35 +19,35 @@ public class StudentsController {
         this.studentsService = studentsService;
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}")
     public ResponseEntity<Student> getStudentById(@PathVariable long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(studentsService.getStudentById(id));
+        return ResponseEntity.ok().body(studentsService.getStudentById(id));
     }
 
-    @GetMapping(value = "/name/{student_name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/name/{student_name}")
     public ResponseEntity<Student> getStudentByName(@PathVariable String student_name) {
-        return ResponseEntity.status(HttpStatus.OK).body(studentsService.getStudentByName(student_name));
+        return ResponseEntity.ok().body(studentsService.getStudentByName(student_name));
     }
 
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public ResponseEntity<List<Student>> getAllStudents() {
         List<Student> students = studentsService.getAllStudents();
         if (students.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        else return ResponseEntity.status(HttpStatus.OK).body(students);
+        else return ResponseEntity.ok().body(students);
     }
 
-    @GetMapping(value = "/group/{group_name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/group/{group_name}")
     public ResponseEntity<List<Student>> getStudentsByGroup(@PathVariable String group_name) {
         List<Student> students = studentsService.getStudentsByGroup(group_name);
         if (students.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        else return ResponseEntity.status(HttpStatus.OK).body(students);
+        else return ResponseEntity.ok().body(students);
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     public ResponseEntity<Student> addStudent(@RequestBody StudentDTO studentDTO) {
         Student saved = studentsService.addStudent(studentDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        return ResponseEntity.ok().body(saved);
     }
 
 }

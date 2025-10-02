@@ -25,53 +25,52 @@ public class CoursesController {
         this.courseService = courseService;
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public ResponseEntity<List<Course>> getAllCourses() {
         List<Course> courses = courseService.getAllCourses();
         if (courses.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        else return ResponseEntity.status(HttpStatus.OK).body(courses);
+        else return ResponseEntity.ok().body(courses);
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     public ResponseEntity<Course> addCourse(@RequestBody CourseDTO courseDTO) {
         Course saved = courseService.addCourse(courseDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        return ResponseEntity.ok().body(saved);
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}")
     public ResponseEntity<Course> getCourseById(@PathVariable long id) {
         Course course = courseService.getCourseById(id);
         return ResponseEntity.ok(course);
     }
 
-    @GetMapping(value = "/name/{course_name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/name/{course_name}")
     public ResponseEntity<Course> getCourseByName(@PathVariable String course_name) {
         Course course = courseService.getCourseByName(course_name);
         return ResponseEntity.ok(course);
     }
 
-    @GetMapping(value = "/teacher/name/{teacher_name}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/teacher/name/{teacher_name}")
     public ResponseEntity<List<Course>> getCourseByTeacherName(@PathVariable String teacher_name) {
         List<Course> courseList = courseService.getCoursesByTeacherName(teacher_name);
         if (courseList.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        return ResponseEntity.status(HttpStatus.OK).body(courseList);
+        return ResponseEntity.ok().body(courseList);
     }
 
-    @GetMapping(value = "/teacher/id/{teacher_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/teacher/id/{teacher_id}")
     public ResponseEntity<List<Course>> getCourseByTeacherId(@PathVariable long teacher_id) {
         List<Course> courseList = courseService.getCoursesByTeacherId(teacher_id);
         if (courseList.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        return ResponseEntity.status(HttpStatus.OK).body(courseList);
+        return ResponseEntity.ok().body(courseList);
     }
 
-    @GetMapping(value = "/presents/{course_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/presents/{course_id}")
     public ResponseEntity<List<StudentAbsenceCountDTO>> getAbsencesByCourse(@PathVariable long course_id) {
-        return ResponseEntity.status(HttpStatus.OK).body(courseService.getPresentsByCourse(course_id));
+        return ResponseEntity.ok().body(courseService.getPresentsByCourse(course_id));
     }
 
-    @GetMapping(value = "/average/{course_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/average/{course_id}")
     public ResponseEntity<Double> getAverageGradeByCourse(@PathVariable long course_id) {
-        return ResponseEntity.status(HttpStatus.OK).body(courseService.getAverageGradeByCourse(course_id));
+        return ResponseEntity.ok().body(courseService.getAverageGradeByCourse(course_id));
     }
-
 }

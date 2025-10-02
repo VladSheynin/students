@@ -19,19 +19,19 @@ public class GradesController {
         this.gradeService = gradeService;
     }
 
-    @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping
     public ResponseEntity<Grade> addGrade(@RequestBody GradeDTO gradeDTO) {
         Grade saved = gradeService.addGrade(gradeDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        return ResponseEntity.ok().body(saved);
     }
 
-    @GetMapping(value = "/student/{student_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/student/{student_id}")
     public ResponseEntity<List<Grade>> getGradeByStudent(@PathVariable long student_id) {
-        return ResponseEntity.status(HttpStatus.OK).body(gradeService.getGradeByStudentId(student_id));
+        return ResponseEntity.ok().body(gradeService.getGradeByStudentId(student_id));
     }
 
-    @GetMapping(value = "/course/{course_id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/course/{course_id}")
     public ResponseEntity<List<Grade>> getGradeByCourse(@PathVariable long course_id) {
-        return ResponseEntity.status(HttpStatus.OK).body(gradeService.getGradeByCourseId(course_id));
+        return ResponseEntity.ok().body(gradeService.getGradeByCourseId(course_id));
     }
 }
