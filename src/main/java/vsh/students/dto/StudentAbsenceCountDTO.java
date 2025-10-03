@@ -1,6 +1,16 @@
 package vsh.students.dto;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import vsh.students.model.Student;
 
-public record StudentAbsenceCountDTO(Student student, long absenceCount) {
+@Getter
+@Setter
+@RequiredArgsConstructor
+public class StudentAbsenceCountDTO {
+    private Student student;
+    private long absenceCount;
+
 }

@@ -1,11 +1,17 @@
 package vsh.students.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "grades")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Grade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,47 +30,4 @@ public class Grade {
 
     @Column(name = "grade_date")
     private LocalDate gradedAt;
-
-    public Grade() {
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
-    }
-
-    public int getGrade() {
-        return grade;
-    }
-
-    public void setGrade(int grade) {
-        this.grade = grade;
-    }
-
-    public LocalDate getGradedAt() {
-        return gradedAt;
-    }
-
-    public void setGradedAt(LocalDate gradedAt) {
-        this.gradedAt = gradedAt;
-    }
 }
