@@ -9,8 +9,6 @@ import vsh.students.model.Course;
 import java.util.List;
 
 public interface CourseRepository extends JpaRepository<Course, Long> {
-    //@EntityGraph(attributePaths = {"teacher", "students"})
-    //List<Course> findAll();
 
     @EntityGraph(attributePaths = {"teacher", "students"})
     List<Course> findByTeacher_Name(String name);

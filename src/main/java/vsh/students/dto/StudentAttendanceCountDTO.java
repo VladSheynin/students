@@ -10,7 +10,7 @@ import vsh.students.model.Student;
 @Setter
 @RequiredArgsConstructor
 public class StudentAttendanceCountDTO {
-    private Student student;
-    private long present;
-    private long absences;
+    private final Student student;
+    private final long present;
+    private final long absences;
 }
