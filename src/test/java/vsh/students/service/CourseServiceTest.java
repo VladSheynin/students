@@ -8,9 +8,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import vsh.students.dto.CourseDTO;
 import vsh.students.dto.StudentAbsenceCountDTO;
-import vsh.students.dto.StudentDTO;
 import vsh.students.exception.CourseNotFoundException;
 import vsh.students.exception.DuplicateCourseException;
+import vsh.students.exception.StudentNotFoundException;
 import vsh.students.exception.TeacherNotFoundException;
 import vsh.students.model.Course;
 import vsh.students.model.Student;
@@ -55,7 +55,9 @@ class CourseServiceTest {
         teacher.setId(1L);
 
         Student student1 = new Student();
+        student1.setId(1L);
         Student student2 = new Student();
+        student2.setId(2L);
         students = List.of(student1, student2);
 
         course = new Course();
@@ -66,11 +68,11 @@ class CourseServiceTest {
     }
 
     @Test
-    void addCourse_ShouldReturnExceptionIfCourseExist(){
+    void addCourse_ShouldReturnExceptionIfCourseExist() {
         CourseDTO courseDTO = new CourseDTO();
         courseDTO.setCourseName("CourseName");
         courseDTO.setTeacherId(1L);
-        courseDTO.setStudentsIds(List.of(10L,20L));
+        courseDTO.setStudentsIds(List.of(10L, 20L));
         when(courseRepository.findByNameWithTeacherAndStudents(courseDTO.getCourseName())).thenReturn(new Course());
 
         DuplicateCourseException exception = assertThrows(DuplicateCourseException.class, () -> courseService.addCourse(courseDTO));
@@ -81,11 +83,28 @@ class CourseServiceTest {
     }
 
     @Test
-    void addCourse_ShouldSaveAndReturnCourse(){
+    void addCourse_ShouldReturnExceptionIfStudentsNotFound() {
         CourseDTO courseDTO = new CourseDTO();
         courseDTO.setCourseName(courseName);
         courseDTO.setTeacherId(1L);
-        courseDTO.setStudentsIds(List.of(10L,20L));
+        courseDTO.setStudentsIds(List.of(1L, 20L));
+
+        when(studentsService.getStudentsByIds(courseDTO.getStudentsIds())).thenReturn(List.of(students.get(0)));
+        when(courseRepository.findByNameWithTeacherAndStudents(courseDTO.getCourseName())).thenReturn(null);
+        when(teacherService.getTeacherById(1L)).thenReturn(teacher);
+        StudentNotFoundException exception = assertThrows(StudentNotFoundException.class, () -> courseService.addCourse(courseDTO));
+        assertEquals("Не найдены студенты с id: [20]", exception.getMessage());
+
+        verify(courseRepository,never()).save(any());
+    }
+
+
+    @Test
+    void addCourse_ShouldSaveAndReturnCourse() {
+        CourseDTO courseDTO = new CourseDTO();
+        courseDTO.setCourseName(courseName);
+        courseDTO.setTeacherId(1L);
+        courseDTO.setStudentsIds(List.of(10L, 20L));
 
         when(courseRepository.findByNameWithTeacherAndStudents(courseDTO.getCourseName())).thenReturn(null);
         when(teacherService.getTeacherById(1L)).thenReturn(teacher);
@@ -96,11 +115,10 @@ class CourseServiceTest {
 
         assertEquals(courseName, result.getName());
         assertEquals(teacher.getName(), result.getTeacher().getName());
-        assertEquals(students.get(1).getName(),result.getStudents().get(1).getName());
+        assertEquals(students.get(1).getName(), result.getStudents().get(1).getName());
 
         verify(courseRepository, times(1)).save(any());
     }
-
 
 
     @Test
@@ -250,8 +268,8 @@ class CourseServiceTest {
     void getPresentsByCourse_ShouldThrowCourseNotFoundException() {
         when(courseRepository.existsById(courseId)).thenReturn(false);
 
-        CourseNotFoundException exception = assertThrows(CourseNotFoundException.class, () -> courseService.getAverageGradeByCourse(course.getId()));
-        assertEquals("Курс с ID 1 не найден", exception.getMessage());
+        CourseNotFoundException exception = assertThrows(CourseNotFoundException.class, () -> courseService.getPresentsByCourse(course.getId()));
+        assertEquals("Курс с id 1 не существует", exception.getMessage());
 
         verify(attendanceRepository, never()).findStudentsWithAbsenceCount(course);
     }

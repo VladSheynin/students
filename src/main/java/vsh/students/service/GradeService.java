@@ -43,7 +43,21 @@ public class GradeService {
             Course course;
             course = courseService.getCourseById(gradeDTO.getCourse_id());
 
-            check(student, course);
+            //Проверка посещаемости (если процент посещаемости меньше числа PERCENT_FOR_ATTENDANCE, то оценка не ставится и выбрасывается исключение
+            StudentAttendanceCountDTO studentAttendanceCountDTO = attendanceService.getStudentAttendanceByCourse(student.getId(), course.getId());
+            long present = studentAttendanceCountDTO.getPresent();
+            long absences = studentAttendanceCountDTO.getAbsences();
+
+            if (present + absences == 0) {
+                throw new NoAttendanceException("Студент не посещал курс " + course.getName());
+            }
+
+            double percent = present * 100.0 / (present + absences);
+
+            if (percent < PERCENT_FOR_ATTENDANCE) {
+                throw new LowAttendanceException("Студент " + student.getName() + " на курсе " + course.getName() + " посетил всего " + present + " занятий из " + (present + absences) + " (это " + percent + "%), при минимуме " + PERCENT_FOR_ATTENDANCE + "%");
+            }
+            //конец проверки
 
             Grade grade = new Grade();
             grade.setStudent(student);
@@ -54,13 +68,13 @@ public class GradeService {
             return grade;
         } else throw new DuplicateGradeOnCourseException("У данного студента уже есть оценка за этот курс ");
     }
-
-    /**
+/*
+    *//**
      * Проверка посещаемости (если процент посещаемости меньше числа PERCENT_FOR_ATTENDANCE, то оценка не ставится и выбрасывается исключение
      *
      * @param student - студент
      * @param course  - курс
-     */
+     *//*
     private void check(Student student, Course course) {
         StudentAttendanceCountDTO studentAttendanceCountDTO = attendanceService.getStudentAttendanceByCourse(student.getId(), course.getId());
         long present = studentAttendanceCountDTO.getPresent();
@@ -76,7 +90,7 @@ public class GradeService {
             throw new LowAttendanceException("Студент " + student.getName() + " на курсе " + course.getName() + " посетил всего " + present + " занятий из " + (present + absences) + " (это " + percent + "%), при минимуме " + PERCENT_FOR_ATTENDANCE + "%");
         }
 
-    }
+    }*/
 
     /**
      * Получение оценок по студенту

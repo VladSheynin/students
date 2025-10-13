@@ -38,8 +38,7 @@ public class CourseService {
     @Transactional
     public Course addCourse(CourseDTO courseDTO) {
 
-        if (courseRepository.findByName
-        if (getCourseByName(courseDTO.getCourseName()) != null) {
+        if (courseRepository.findByNameWithTeacherAndStudents(courseDTO.getCourseName()) != null) {
             throw new DuplicateCourseException("Курс с именем '" + courseDTO.getCourseName() + "' уже существует");
         }
 
