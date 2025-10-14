@@ -1,16 +1,11 @@
 package vsh.students.controller;
 
-import org.hibernate.LazyInitializationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import vsh.students.dto.CourseDTO;
 import vsh.students.dto.StudentAbsenceCountDTO;
 import vsh.students.model.Course;
-import vsh.students.repositories.CourseRepository;
 import vsh.students.service.CourseService;
 
 import java.util.List;
@@ -35,7 +30,7 @@ public class CoursesController {
     @PostMapping
     public ResponseEntity<Course> addCourse(@RequestBody CourseDTO courseDTO) {
         Course saved = courseService.addCourse(courseDTO);
-        return ResponseEntity.ok().body(saved);
+        return ResponseEntity.ok(saved);
     }
 
     @GetMapping(value = "/{id}")
@@ -54,23 +49,23 @@ public class CoursesController {
     public ResponseEntity<List<Course>> getCourseByTeacherName(@PathVariable String teacher_name) {
         List<Course> courseList = courseService.getCoursesByTeacherName(teacher_name);
         if (courseList.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        return ResponseEntity.ok().body(courseList);
+        return ResponseEntity.ok(courseList);
     }
 
     @GetMapping(value = "/teacher/id/{teacher_id}")
     public ResponseEntity<List<Course>> getCourseByTeacherId(@PathVariable long teacher_id) {
         List<Course> courseList = courseService.getCoursesByTeacherId(teacher_id);
         if (courseList.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        return ResponseEntity.ok().body(courseList);
+        return ResponseEntity.ok(courseList);
     }
 
     @GetMapping(value = "/presents/{course_id}")
     public ResponseEntity<List<StudentAbsenceCountDTO>> getAbsencesByCourse(@PathVariable long course_id) {
-        return ResponseEntity.ok().body(courseService.getPresentsByCourse(course_id));
+        return ResponseEntity.ok(courseService.getPresentsByCourse(course_id));
     }
 
     @GetMapping(value = "/average/{course_id}")
     public ResponseEntity<Double> getAverageGradeByCourse(@PathVariable long course_id) {
-        return ResponseEntity.ok().body(courseService.getAverageGradeByCourse(course_id));
+        return ResponseEntity.ok(courseService.getAverageGradeByCourse(course_id));
     }
 }

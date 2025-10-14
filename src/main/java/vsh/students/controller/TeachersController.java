@@ -22,26 +22,26 @@ public class TeachersController {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Teacher> getTeacherById(@PathVariable long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(teacherService.getTeacherById(id));
+        return ResponseEntity.ok(teacherService.getTeacherById(id));
     }
 
     @GetMapping
     public ResponseEntity<List<Teacher>> getAllTeachers() {
         List<Teacher> teachers = teacherService.getAllTeachers();
         if (teachers.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        else return ResponseEntity.ok().body(teachers);
+        else return ResponseEntity.ok(teachers);
     }
 
     @GetMapping(value = "/department/{department}")
-    public ResponseEntity<List<Teacher>> getTeachersByGroup(@PathVariable String department) {
+    public ResponseEntity<List<Teacher>> getTeachersByDepartment(@PathVariable String department) {
         List<Teacher> teachers = teacherService.getTeachersByDepartment(department);
         if (teachers.isEmpty()) return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        else return ResponseEntity.ok().body(teachers);
+        else return ResponseEntity.ok(teachers);
     }
 
     @PostMapping
     public ResponseEntity<Teacher> addTeacher(@RequestBody TeacherDTO teacherDTO) {
         Teacher saved = teacherService.addTeacher(teacherDTO);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(saved);
     }
 }

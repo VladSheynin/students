@@ -25,17 +25,17 @@ public class AttendanceController {
     @PostMapping
     public ResponseEntity<Attendance> addAttendance(@RequestBody AttendanceDTO attendanceDTO) {
         Attendance saved = attendanceService.addAttendance(attendanceDTO);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(saved);
     }
 
     @GetMapping(value = "/student/{student_id}")
     public ResponseEntity<List<Attendance>> getAttendanceByStudentId(@PathVariable long student_id) {
-        return ResponseEntity.ok().body(attendanceService.getAttendanceByStudentId(student_id));
+        return ResponseEntity.ok(attendanceService.getAttendanceByStudentId(student_id));
     }
 
     @GetMapping(value = "/student/course/{student_id}/{course_id}")
     public ResponseEntity<StudentAttendanceCountDTO> getStudentAttendanceByCourseIdAndStudentId(@PathVariable long student_id, @PathVariable long course_id) {
-        return ResponseEntity.ok().body(attendanceService.getStudentAttendanceByCourse(student_id, course_id));
+        return ResponseEntity.ok(attendanceService.getStudentAttendanceByCourse(student_id, course_id));
     }
 
 }

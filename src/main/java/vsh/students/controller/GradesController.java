@@ -1,7 +1,5 @@
 package vsh.students.controller;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vsh.students.dto.GradeDTO;
@@ -22,16 +20,16 @@ public class GradesController {
     @PostMapping
     public ResponseEntity<Grade> addGrade(@RequestBody GradeDTO gradeDTO) {
         Grade saved = gradeService.addGrade(gradeDTO);
-        return ResponseEntity.ok().body(saved);
+        return ResponseEntity.ok(saved);
     }
 
     @GetMapping(value = "/student/{student_id}")
     public ResponseEntity<List<Grade>> getGradeByStudent(@PathVariable long student_id) {
-        return ResponseEntity.ok().body(gradeService.getGradeByStudentId(student_id));
+        return ResponseEntity.ok(gradeService.getGradeByStudentId(student_id));
     }
 
     @GetMapping(value = "/course/{course_id}")
     public ResponseEntity<List<Grade>> getGradeByCourse(@PathVariable long course_id) {
-        return ResponseEntity.ok().body(gradeService.getGradeByCourseId(course_id));
+        return ResponseEntity.ok(gradeService.getGradeByCourseId(course_id));
     }
 }
