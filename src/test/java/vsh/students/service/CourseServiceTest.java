@@ -95,7 +95,7 @@ class CourseServiceTest {
         StudentNotFoundException exception = assertThrows(StudentNotFoundException.class, () -> courseService.addCourse(courseDTO));
         assertEquals("Не найдены студенты с id: [20]", exception.getMessage());
 
-        verify(courseRepository,never()).save(any());
+        verify(courseRepository, never()).save(any());
     }
 
 

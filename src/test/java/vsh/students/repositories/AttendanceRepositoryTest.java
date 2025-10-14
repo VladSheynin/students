@@ -79,24 +79,28 @@ class AttendanceRepositoryTest {
         attendance1.setCourse(courseEnglish);
         attendance1.setPresent(true);
         attendance1.setDate(LocalDate.now());
+        attendance1 = attendanceRepository.save(attendance1);
 
         Attendance attendance2 = new Attendance();
         attendance2.setStudent(studentSheynin);
         attendance2.setCourse(courseEnglish);
         attendance2.setPresent(true);
         attendance2.setDate(LocalDate.now().minusDays(1));
+        attendance2 = attendanceRepository.save(attendance2);
 
         Attendance attendance3 = new Attendance();
         attendance3.setStudent(studentIvanov);
         attendance3.setCourse(courseEnglish);
         attendance3.setPresent(false);
         attendance3.setDate(LocalDate.now());
+        attendance3 = attendanceRepository.save(attendance3);
 
         Attendance attendance4 = new Attendance();
         attendance4.setStudent(studentIvanov);
         attendance4.setCourse(courseEnglish);
         attendance4.setPresent(true);
         attendance4.setDate(LocalDate.now().minusDays(1));
+        attendance4 = attendanceRepository.save(attendance4);
 
     }
 
