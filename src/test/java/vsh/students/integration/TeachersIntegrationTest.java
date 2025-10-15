@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class TeachersIntegrationTest {
     @Container
     public static PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:15")
-            .withDatabaseName("test_students_db")
+            .withDatabaseName("test_teachers_db")
             .withUsername("user")
             .withPassword("password");
 

@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GradeRepository extends JpaRepository<Grade, Long> {
-    @EntityGraph(attributePaths = {"teacher", "students"})
+    @EntityGraph(attributePaths = {"student"})
     Optional<List<Grade>> findByStudent_Id(long id);
 
-    @EntityGraph(attributePaths = {"teacher", "students"})
+    @EntityGraph(attributePaths = {"student"})
     Optional<List<Grade>> findByCourse_Id(long id);
 
-    @EntityGraph(attributePaths = {"teacher", "students"})
+    @EntityGraph(attributePaths = {"student"})
     Optional<List<Grade>> findByStudent_idAndCourse_Id(long student_id,long course_id);
 }
