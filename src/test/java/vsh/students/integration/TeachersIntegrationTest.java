@@ -1,6 +1,7 @@
 package vsh.students.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,11 @@ public class TeachersIntegrationTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
+
+    @AfterAll
+    public static void stopContainer() {
+        postgresContainer.stop();
+    }
 
     @BeforeEach
     public void addThreeStudents() throws Exception {

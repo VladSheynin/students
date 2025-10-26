@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "teachers")
 @Getter
@@ -20,4 +23,7 @@ public class Teacher {
 
     @Column(name = "department")
     private String department;
+
+    @OneToMany(mappedBy = "teacher",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Course> courses = new ArrayList<>();
 }

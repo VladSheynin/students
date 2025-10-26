@@ -48,7 +48,6 @@ class AttendanceRepositoryTest {
         registry.add("spring.datasource.url", postgresContainer::getJdbcUrl);
         registry.add("spring.datasource.username", postgresContainer::getUsername);
         registry.add("spring.datasource.password", postgresContainer::getPassword);
-        registry.add("spring.datasource.driver-class-name", () -> "org.postgresql.Driver");
     }
 
     @BeforeEach
